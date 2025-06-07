@@ -670,12 +670,12 @@
                             </template>
                             编辑
                         </n-button>
-                        <!-- <n-button @click="goToTunnelInfo" round quaternary type="primary">
+                        <n-button @click="goToTunnelInfo(card.id)" round quaternary type="primary">
                             <template #icon>
                                 <n-icon :component="EyeOutline" />
                             </template>
-                查看
-            </n-button> -->
+                            查看
+                        </n-button>
                         <n-button
                             :disabled="!deletetTunnelSuccess"
                             round
@@ -723,6 +723,7 @@
 import {
     RefreshOutline,
     AddOutline,
+    EyeOutline,
     TrashOutline,
     CreateOutline,
     BanOutline,
@@ -737,6 +738,7 @@ import axios from 'axios';
 import { useUserStore } from '@/stores/user';
 
 import api from '@/api';
+import { useRouter } from 'vue-router';
 
 const userStore = useUserStore();
 const userInfo = userStore.userInfo;
@@ -766,6 +768,13 @@ const screenStore = useScreenStore();
 const { screenWidth } = storeToRefs(screenStore);
 
 const selectNode = ref(''); // 选中节点名
+
+const router = useRouter();
+
+const goToTunnelInfo = (tunnel_id: number) => {
+    const url = router.resolve({ path: '/tunnel/info', query: { tunnel: tunnel_id } }).href;
+    window.open(url, '_blank');
+};
 
 // 根据屏幕宽度决定对话框大小
 const widthStyle = computed(() => ({
