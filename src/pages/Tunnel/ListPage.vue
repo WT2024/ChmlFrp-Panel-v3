@@ -947,25 +947,24 @@ const chartRef = ref<HTMLElement | null>(null);
 let chartInstance: echarts.ECharts | null = null;
 
 // 获取近七日流量数据
-const getTunnelLast7days = async (tunnelId: Number, state: String) => {
+const getTunnelLast7days = async (tunnelId: number, state: string) => {
     if (state === 'false') {
         message.error('隧道不在线，无法获取数据');
     } else {
 
   try {
     loading.value = true;
-    const response = await axios.get(`https://cf-v2.uapis.cn/tunnel/last7days?token=${userInfo?.usertoken}&tunnel_id=${tunnelId}`);
+    const response = await api.v2.tunnel.getTunnelLast7days(userInfo?.usertoken || '', tunnelId);
     
-    if (response.data.code === 200 && response.data.state === 'success') {
-      const { traffic_in, traffic_out } = response.data.data;
+    if (response.code === 200 && response.state === 'success') {
       last7daysModal.value = true;
       
       // 确保DOM更新后初始化图表
       nextTick(() => {
-        initChart(traffic_in, traffic_out);
+        initChart(response.data.traffic_in, response.data.traffic_out);
       });
     } else {
-      message.error(response.data.msg || '获取流量数据失败');
+      message.error(response.msg || '获取流量数据失败');
     }
   } catch (error) {
     message.error('获取流量数据时出错');
